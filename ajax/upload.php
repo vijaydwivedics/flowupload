@@ -23,10 +23,19 @@ $path = preg_replace('/(\.\.\/|~|\/\/)/i', '', $request->getRelativePath());
 $path = preg_replace('/[^a-z0-9äöüßáàâãéèêíìîóòõôúùûºªç&$%*#@ \(\)\.\-_\/]/i', '', $path);
 $path = trim($path, '/');
 
+/*
+Comment //http_response_code(200); //die(); 
+So flowupload allow to upload duplocate file.
+*/
+
 // Skip existing files // ToDo: Check if file size changed?
 if (\OC\Files\Filesystem::file_exists($result . $path)) {
-	http_response_code(200);
-	die();
+	//http_response_code(200);
+	//die();
+	//Manage Version
+	$source = $result . $path;
+	$list_uid_filename = OCA\Files_Versions\Storage::getUidAndFilename($source);
+	$store = OCA\Files_Versions\Storage::store($list_uid_filename[1]);
 }
 
 // Process upload
